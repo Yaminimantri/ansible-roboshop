@@ -1,6 +1,28 @@
-- name: "ping the server"
-  hosts: frontend # Which server you are connecting to
-  # List of tasks/collections/modules
+- name: create ec2 and r53
+  hosts: local
+  connection: local
+  vars:
+    ami_id: ami-09c813fb71547fc4f
+    sg_id: sg-0e9e29a7d8854c36b # replace with your SG ID
+    zone_id: "Z06672831LSN6WUF978LV" # replace with your ID
+    domain_name: "daws86s.fun"
+    instances: 
+     - mongodb
+    # - redis
+    # - mysql
+    # - rabbitmq
   tasks:
-  - name: ping
-    ansible.builtin.ping:
+  - name: create ec2 instance
+    amazon.aws.ec2_instance:
+      name: "{{ item }}"
+      instance_type: t3.micro
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+      tags:
+        Name: "{{ item }}"
+    loop: "{{ instances }}"
+    register: ec2_output
+
+  - name: print the ec2_output
+    ansible.builtin.debug:
+      msg: "{{ ec2_output }}"
