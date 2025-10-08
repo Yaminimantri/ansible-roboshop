@@ -8,9 +8,10 @@
     domain_name: "yaminiaws.fun"
     instances: 
     # - mongodb
-    - redis
-    - mysql
-    - rabbitmq
+    # - redis
+    # - mysql
+    # - rabbitmq
+    - catalogue
   tasks:
   - name: create ec2 instance
     amazon.aws.ec2_instance:
